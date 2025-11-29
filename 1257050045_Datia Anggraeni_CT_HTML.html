@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keramik 2xN</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+<style>
+    body {
+        font-family: Arial;
+        background: #f3f3f3;
+        padding: 20px;
+    }
+
+
+    .row{
+        display: flex;
+        gap: 5px;
+        margin-bottom: 8px;
+        background: white;
+        border: 5px;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+
+    .tileV{
+        width: 25px;
+        height: 50px;
+        background: #c1f4c1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+
+    .tileHbox {
+        width: 50px;
+        height: 50px;
+        background: #ffd1dc;
+        flex-direction: column;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+
+    .tileHbox div {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>
+    <h2>Program Keramik 2 x N</h2>
+
+    <label>Masukan N: </label>
+    <input type="number" id="inputN">
+    <button onclick="generate()">Generate</button>
+
+    <h3>Hasil:</h3>
+    <div id="hasil"></div>
+
+
+   <script>
+
+    function getCombo(n) {
+        let dp = [];
+        dp[0] = [[]];  
+        for (let i = 1; i <= n; i++) {
+            let temp = [];
+
+            if (dp[i - 1]) {
+                dp[i - 1].forEach(function (a) {
+                    temp.push(["V"].concat(a));
+                });
+            }
+
+            if (i - 2 >= 0 && dp[i - 2]) {
+                dp[i - 2].forEach(function (a) {
+                    temp.push(["H"].concat(a));
+                });
+            }
+
+            dp[i] = temp;
+        }
+
+        return dp[n];
+    }
+
+    function render(list) {
+        let area = document.getElementById("hasil");
+        area.innerHTML = "";
+
+        list.forEach(function (combo) {
+
+            let row = document.createElement("div");
+            row.className = "row";
+
+            combo.forEach(function (t) {
+                if (t === "V") {
+                    let v = document.createElement("div");
+                    v.className = "tileV";
+                    v.innerHTML = "V";
+                    row.appendChild(v);
+
+                } else {
+                    let h = document.createElement("div");
+                    h.className = "tileHbox";
+
+                    let a = document.createElement("div");
+                    a.innerHTML = "H";
+                    let b = document.createElement("div");
+                    b.innerHTML = "H";
+
+                    h.appendChild(a);
+                    h.appendChild(b);
+
+                    row.appendChild(h);
+                }
+            });
+
+            area.appendChild(row);
+        });
+    }
+
+    function generate() {
+        let n = parseInt(document.getElementById("inputN").value);
+
+        if (!n || n < 1) {
+            alert("N minimal 1");
+            return;
+        }
+
+        let combos = getCombo(n);
+        render(combos);
+    }
+
+</script>
+
